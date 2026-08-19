@@ -12,4 +12,4 @@ brew update
 brew install tesseract-ocr tesseract-ocr-ron tesseract-ocr-eng
 
 pip install -r requirements.txt
-python$VER app.py
+python$VER app.py &
