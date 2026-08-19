@@ -1,0 +1,4 @@
+flask
+pytesseract
+PyMuPDF
+Pillow
