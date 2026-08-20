@@ -317,8 +317,8 @@ def generate_ocr_html(pdf_path):
                     
                     # Get font size from OCR data
                     font_size = ocr_data['height'][i] / zoom
-                    #if font_size > max_font_size:
-                    font_size = max_font_size
+                    if font_size > max_font_size:
+                        font_size = max_font_size
                     
                     # Process each character in the text
                     char_width = width / len(text)
