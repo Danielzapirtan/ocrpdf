@@ -2,10 +2,10 @@
 name: OCR PDF Processor
 
 on:
-  push:
-    paths:
-      - '*.pdf'
-      - 'ocr_pdf_cli.py'
+#  push:
+#    paths:
+#      - '*.pdf'
+#      - 'ocr_pdf_cli.py'
   workflow_dispatch:
     inputs:
       pdf_file:
