@@ -119,7 +119,7 @@ def generate_ocr_html(pdf_path, output_path):
                         # Get bounding box coordinates (scaled back to PDF coordinates)
                         x = ocr_data['left'][i] / zoom
                         y = ocr_data['top'][i] / zoom
-                        max_font_size = 8.5
+                        max_font_size = 11
                         width = ocr_data['width'][i] / zoom
                         height = ocr_data['height'][i] / zoom
                         
