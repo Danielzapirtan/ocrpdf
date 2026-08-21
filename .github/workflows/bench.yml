@@ -80,17 +80,17 @@ jobs:
             *.pdf
           if-no-files-found: warn
       
-      - name: Create release for manual trigger
-        if: github.event_name == 'workflow_dispatch' && success()
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "OCR Results - ${{ github.run_number }}"
-          files: |
-            *.html
-            *.pdf
-          tag_name: "ocr-results-${{ github.run_number }}"
-          generate_release_notes: false
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Create release for manual trigger
+#        if: github.event_name == 'workflow_dispatch' && success()
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          name: "OCR Results - ${{ github.run_number }}"
+#          files: |
+#            *.html
+#            *.pdf
+#          tag_name: "ocr-results-${{ github.run_number }}"
+#          generate_release_notes: false
+#          draft: false
+#          prerelease: false
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
