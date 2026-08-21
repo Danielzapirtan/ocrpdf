@@ -1,0 +1,96 @@
+# .github/workflows/ocr-pdf-processor.yml
+name: OCR PDF Processor
+
+on:
+  push:
+    paths:
+      - '*.pdf'
+      - 'ocr_pdf_cli.py'
+  workflow_dispatch:
+    inputs:
+      pdf_file:
+        description: 'PDF file path to process'
+        required: true
+        default: 'document.pdf'
+
+jobs:
+  ocr-process:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install system dependencies
+        run: |
+          brew update
+          brew install tesseract tesseract-lang
+          echo "Tesseract installed successfully"
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyMuPDF pytesseract Pillow
+      
+      - name: Verify Tesseract installation
+        run: |
+          tesseract --version
+          python -c "import pytesseract; print('PyTesseract installed successfully')"
+      
+      - name: Process PDF (if triggered by push)
+        if: github.event_name == 'push'
+        run: |
+          # Find PDF files and process them
+          for pdf in *.pdf; do
+            if [ -f "$pdf" ]; then
+              echo "Processing $pdf..."
+              python ocr_pdf_cli.py "$pdf"
+            fi
+          done
+        continue-on-error: false
+      
+      - name: Process PDF (if manually triggered)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ -f "${{ github.event.inputs.pdf_file }}" ]; then
+            echo "Processing ${{ github.event.inputs.pdf_file }}..."
+            python ocr_pdf_cli.py "${{ github.event.inputs.pdf_file }}"
+          else
+            echo "⚠️ File ${{ github.event.inputs.pdf_file }} not found!"
+            exit 1
+          fi
+      
+      - name: List generated files
+        run: |
+          echo "Generated HTML files:"
+          ls -la *.html 2>/dev/null || echo "No HTML files generated"
+      
+      - name: Upload OCR results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocr-pdf-results
+          path: |
+            *.html
+            *.pdf
+          if-no-files-found: warn
+      
+      - name: Create release for manual trigger
+        if: github.event_name == 'workflow_dispatch' && success()
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "OCR Results - ${{ github.run_number }}"
+          files: |
+            *.html
+            *.pdf
+          tag_name: "ocr-results-${{ github.run_number }}"
+          generate_release_notes: false
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
