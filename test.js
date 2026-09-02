@@ -1,0 +1,4 @@
+function ScanPage(page) {
+  // TODO
+}
+
